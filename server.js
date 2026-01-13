@@ -33,7 +33,14 @@ app.post("/media-convert", upload.single("file"), (req, res) => {
   }
 
   exec(command, (err) => {
-    if (err) {
-      console.error("FFmpeg error:", err);
-      return res.status(500).json({ error: "ffmpeg failed" });
+  if (err) {
+    console.error("FFmpeg error:", err);
+    return res.status(500).json({ error: "ffmpeg failed" });
+  }
+
+  res.download(outputPath, () => {
+    fs.unlinkSync(inputPath);
+    fs.unlinkSync(outputPath);
+  });
+});
 
